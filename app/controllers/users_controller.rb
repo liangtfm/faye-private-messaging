@@ -4,11 +4,10 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params[:user])
+    @user = User.new(user_params)
 
     if @user.save
       sign_in(@user)
-      AuthMailer.signup_email(@user).deliver!
       redirect_to users_url
     else
       render :json => @user.errors.full_messages
@@ -17,5 +16,11 @@ class UsersController < ApplicationController
 
 	def index
 		@users = User.all
+	end
+
+	private
+
+	def user_params
+		params.require(:user).permit(:username)
 	end
 end
